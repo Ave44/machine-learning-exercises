@@ -1,0 +1,2 @@
+# INF_Pawel_Olszewski_274983
+Repozytorium przechowójące zadania z przedmiotu Inteligencja obliczeniowa

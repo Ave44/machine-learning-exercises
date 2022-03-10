@@ -104,7 +104,6 @@ def standarize(vec):
     stanarized_vec = []
     for i in vec:
         stanarized_vec.append((i-avg)/sd)
-        print(i, avg, sd, (i-avg)/sd)
     return stanarized_vec
 
 z = standarize(vec)

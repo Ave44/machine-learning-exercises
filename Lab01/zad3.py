@@ -1,5 +1,3 @@
-from cProfile import label
-from matplotlib import markers
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -26,9 +24,13 @@ miasta.plot(x='Rok',
             color='red',
             marker='o',
             legend=False,
-            title='Ludność w miastach Polski',
-            xlabel='Lata',
-            ylabel='Liczba ludności (w tys)')
+            title='Ludność w miastach Polski'
+            #xlabel='Lata'
+            #ylabel='Liczba ludności (w tys)'
+            )
+
+plt.xlabel('Lata')
+plt.ylabel('Liczba ludności (w tys)')
 
 # d)
 

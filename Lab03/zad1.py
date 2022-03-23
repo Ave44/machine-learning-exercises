@@ -57,4 +57,4 @@ res = 0
 for i in timeArray:
     res += i
 
-print(res/len(timeArray))
+print("Average: ", res/len(timeArray))

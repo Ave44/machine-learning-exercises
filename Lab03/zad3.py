@@ -1,5 +1,6 @@
 import pygad
 import math
+import time
 
 labirynt = [[1,1,1,1,1,1,1,1,1,1,1,1],
             [1,2,0,0,1,0,0,0,1,0,0,1],
@@ -51,15 +52,12 @@ def fitness_function (solution, solution_idx):
             x -=1
         if distance(x, y) == 0:
             return 0
-
-    return 1/distance(x, y) - 1
+    
+    return (1/distance(x, y)) - 2
 
 gene_space = [1, 2, 3, 4]
 num_genes = 30
 num_generations = 500
-# zazwyczaj algorytm kończy po 50-250 generacjach (specjalnie ustawiłem zawyżoną wartość
-# żeby zmaksymalizować prawdopodobieństwo odnaleziena wyniku za każdym uruchomieniem algorytmu,
-# ponieważ wszystkie nadmiarowe generacje i tak zostają zatrzymane przez stop_criteria)
 stop_criteria = "reach_0"
 
 sol_per_pop = 40
@@ -68,29 +66,7 @@ num_parents_mating = 18
 parent_selection_type = "sss"
 crossover_type = "single_point"
 mutation_type = "random"
-mutation_percent_genes = 5 # najmiejsza możliwa wartość to 4 ale gdy jest ustawione na 5 algorytm działa lepiej
-
-ga_instance = pygad.GA(gene_space=gene_space,
-                       num_generations=num_generations,
-                       num_parents_mating=num_parents_mating,
-                       fitness_func=fitness_function,
-                       sol_per_pop=sol_per_pop,
-                       num_genes=num_genes,
-                       parent_selection_type=parent_selection_type,
-                       keep_parents=keep_parents,
-                       crossover_type=crossover_type,
-                       mutation_type=mutation_type,
-                       mutation_percent_genes=mutation_percent_genes,
-                       stop_criteria=stop_criteria)
-
-ga_instance.run()
-
-solution, solution_fitness, solution_idx = ga_instance.best_solution()
-print("Generations:", ga_instance.generations_completed)
-print("Solution:\t", end=" ")
-for i in solution:
-    print(directions[i], end=" ")
-print("\nSolution fitness: ", solution_fitness)
+mutation_percent_genes = 4
 
 def opposite (a, b):
     if abs(a - b) % 2 == 0 and a != b:
@@ -101,27 +77,97 @@ def clearResult (solution):
     test = True
     result = []
     i = 0
-    while i <= len(solution):
-        if i == len(solution)-1 and not opposite(solution[i], result[-1]):
-            result.append(solution[i])
-            break
-        elif i == len(solution):
-            break
-        else:
-            if opposite(solution[i], solution[i+1]):
-                i += 2
-                test = False
+
+    while i < len(solution):
+        if len(result) == 0:
+            if i < len(solution)-1:
+                if not opposite(solution[i], solution[i+1]):
+                    result.append(solution[i])
+                    i += 1
+                else:
+                    i += 2
             else:
                 result.append(solution[i])
                 i += 1
+        else:
+            if not opposite(result[-1], solution[i]):
+                result.append(solution[i])
+                i += 1
+            else:
+                result.pop()
+                i += 1
+
     if test:
-        return result
+        cuted = []
+        x = 1
+        y = 1
+        for i in result:
+            if distance(x, y) == 0:
+                return cuted
+            if i == 1:
+                y -= 1
+            if i == 2:
+                x += 1
+            if i == 3:
+                y += 1
+            if i == 4:
+                x -=1
+            cuted.append(i)
+        return cuted
     return clearResult(result)
 
-cleanSolution = clearResult(solution)
-print("Clean solution:\t", end=" ")
-for i in cleanSolution:
-    print(directions[i], end=" ")
-print("\nClean solution length:", len(cleanSolution))
+def runEvolution():
+    ga_instance = pygad.GA(gene_space=gene_space,
+                        num_generations=num_generations,
+                        num_parents_mating=num_parents_mating,
+                        fitness_func=fitness_function,
+                        sol_per_pop=sol_per_pop,
+                        num_genes=num_genes,
+                        parent_selection_type=parent_selection_type,
+                        keep_parents=keep_parents,
+                        crossover_type=crossover_type,
+                        mutation_type=mutation_type,
+                        mutation_percent_genes=mutation_percent_genes,
+                        stop_criteria=stop_criteria)
 
-# ga_instance.plot_fitness() ###################       ODKOMENTOWAĆ         ################################
+    ga_instance.run()
+    return ga_instance
+    # printResult(ga_instance)
+
+def printResult(ga_instance):
+    solution, solution_fitness, solution_idx = ga_instance.best_solution()
+    print("Generations:", ga_instance.generations_completed)
+    print("Solution:\t", end=" ")
+    for i in solution:
+        print(directions[i], end=" ")
+    print("\nSolution fitness: ", solution_fitness)
+
+    cleanSolution = clearResult(solution)
+    print("Clean solution:\t", end=" ")
+    for i in cleanSolution:
+        print(directions[i], end=" ")
+    print("\nClean solution length:", len(cleanSolution))
+    
+    ga_instance.plot_fitness()
+
+printResult(runEvolution())
+
+timeArray = []
+genArray = []
+
+for i in range(10):
+    print('.', end='', flush=True)
+    start = time.time()
+    ga_instance = runEvolution()
+    end = time.time()
+    timeArray.append(end - start)
+    genArray.append(ga_instance.generations_completed)
+
+timeRes = 0
+genRes = 0
+for i in range(len(timeArray)):
+    timeRes += timeArray[i]
+    genRes += genArray[i]
+
+print("\nAverage time: \t", timeRes/len(timeArray))
+print("Average generations: \t", genRes/len(genArray))

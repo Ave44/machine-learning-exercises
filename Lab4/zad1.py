@@ -13,13 +13,13 @@ optimizer = ps.single.GlobalBestPSO(n_particles=10,
                                     dimensions=2,
                                     options=options)
 
-# Perform optimization
+# Uruchomienie optymalizacji
 stats = optimizer.optimize(fx.sphere, iters=100)
 
 print("-----")
 print(stats)
 # print(optimizer.cost_history)
-# print(optimizer.pos_history)
+print(optimizer.pos_history)
 
 
 # wyświetlanie wykresu

@@ -2,17 +2,32 @@ import pygad
 import numpy as np
 import matplotlib.pyplot as plt
 
+# motyl
 verticalM = [[3,2],[1,3,2],[2,1,2,1],[2,1,1],[2,1],[1,2,1],[6,6],[11],[6,6],[1,1,1],[1,1,1],[1,1],[1,1,2,1],[1,1,2],[3]]
 horizontalM = [[1,1],[1,1],[1,1],[1,1],[1,3],[3,3],[1,2,3,3],[1,1,2,1,1,1],[1,5,1,1],[2,3,1],[2,3,1],[1,3,1],[1,1,3,1,1],[2,5,1],[4,1,4]]
 
+# statek
 verticalM10 = [[1,1],[1,2,1],[2,3],[3,2,1],[4,3],[8,1],[3],[2,1],[1,1],[1]]
 horizontalM10 = [[1],[2],[3],[4],[5],[1,2],[8],[6],[1,1,1,1,1],[1,1,1,1,1]]
 
+# kaczka
+verticalM102 = [[1],[2,3],[4,1,1],[1,3],[1,1,1,2],[1,1,2],[4,1,1],[1,1],[1,1],[5]]
+horizontalM102 = [[3],[1,1],[1,1,1],[3,1],[5,1],[1,1,1],[1,4],[1,1,1],[1,2,2],[2,3,1]]
+
+# papuga
+verticalM15 = [[5,2],[2,1,1,2],[1,3,2],[1,1,2,2],[1,2,2,2],[2,1,4,1],[5,1,2],[2,2,4],[2,1,1,2],[1,2,2,2],[2,2,1],[2,7],[2,2,2],[2,2,2],[5,1]]
+horizontalM15 = [[5],[2,2],[1,1,3],[3,5],[1,1,2,2],[4,2,2],[1,3,2],[2,2,2],[2,2,1],[2,2,1],[2,3,4],[4,1,1,1,2],[5,3,1],[6,3],[6]]
+
+# flamingi
 verticalM20 = [[1,2],[2,2,4],[3,3,1,5],[1,8,1,5],[8,2,2,3],[4,1,1,2],[1,1,1,1],[2,2,2],[4,1],[5,1],[6],[2,1,2],[2,1],[5,1],[2,1],[1,2,2,1],[2,1,2,1],[5,1,2],[2,1,1],[2,1,1]]
 horizontalM20 = [[3],[2,1],[5],[2,1,2],[2,2,3],[3,3,1],[9,3],[4,4,1,3],[2,2,3,1],[2,3,4],[4],[1,2],[4,3,3],[4,1,1],[4],[3,1,3],[5,1,3],[6,6],[4],[3]]
 
+# tważ
 verticalM30x40 = [[3,2],[2,3,1,1],[1,3,1,2,1],[3,1,1,2,2,5],[2,2,1,2,1,9],[2,1,2,2,6,4],[2,2,2,1,1,7,2],[1,3,2,2,9,1],[1,3,2,1,1,10],[1,2,2,1,1,1,4,6],[1,2,2,3,3,5,5],[1,2,2,2,1,1,2,7,4],[1,3,3,2,1,2,9,4],[2,2,5,3,12,3],[2,3,9,3,8,2],[1,2,19,6,2],[2,3,18,5,1],[1,3,9,6,5,1],[2,4,6,5,4,1],[2,6,4,4,4],[5,10,4,3,3],[12,4,3,3,3],[2,10,3,3,3,3],[2,2,9,3,2,3,4],[1,2,6,3,3,3,2,1],[3,1,5,3,2,3,2,1],[1,2,1,4,3,1,3,2,1],[2,1,1,2,2,5,2,2,1],[4,1,2,3,3,5,3,2,2],[4,1,2,6,2,2,3,2,2]]
 horizontalM30x40 = [[3,10,2,1,2],[2,4,4,2,1,3],[1,3,4,3,1,1,3],[3,9,2,2,2],[3,5,5,2,1,2],[2,2,4,4,1,2,2],[4,3,1,2],[4,2,2,3],[3,1,2,2],[5,3,2,1],[4,3,1,2],[2,6,4],[1,1,3,3,5],[4,1,3,5],[2,3,1,6,5,2],[1,5,4,4],[2,3,4,2],[2,1,3,5,1],[1,3,5,1],[4,1,4,2],[4,4,2,7],[2,2,5,1,5],[3,6,2,3,1],[4,2,3,5],[1,6,3,2],[2,2,3,2,7],[3,3,4,2,6],[9,4,3,4],[11,4,4],[11,4,4],[12,4,3,1],[6,6,5,2],[2,4,6,9],[2,4,6,7],[3,4,6,3,1],[2,5,6,3],[3,5,14],[2,5,10,1],[1,6,5,2],[7,6]]
+
+verticalMColor = [[[1,1]],[[1,1],[2,1]],[[2,1],[4,1]],[[1,2],[6,1]],[[3,2],[4,1]],[[4,2],[2,1],[1,3]],[[3,2],[2,1],[3,3]],[[1,1],[2,2],[1,1],[3,3]],[[2,1],[1,2],[1,1],[3,3],[2,1]],[[5,1],[5,3],[1,1]],[[4,1],[5,3]],[[2,1],[1,1],[4,3]],[[3,1],[2,3]],[[1,1]],[[1,1]]]
+horizontalMColor = [[[3,1]],[[5,1]],[[4,1],[3,1]],[[4,2],[4,1]],[[4,2],[1,1],[3,3]],[[3,2],[1,1],[4,3]],[[3,2],[1,1],[3,3]],[[6,1],[4,3]],[[5,1],[5,3]],[[2,1],[5,3]],[[3,1],[2,3],[1,1]],[[3,1],[2,1]],[[4,1]],[[1,1]]]
 
 def createImg(genes, height, width):
     img = np.zeros((height, width))
@@ -282,4 +297,103 @@ def runAlgorythmV2(verticalPattern, horizontalPattern):
     plt.show()
     return ga_instance
 
-runAlgorythmV2(verticalM, horizontalM)
+def runAlgorythmColor(verticalPattern, horizontalPattern):
+    height = len(horizontalPattern)
+    width = len(verticalPattern)
+
+    def fitness_func(solution, solution_idx):
+        fitness = 0
+        # tworzenie macieży
+        img = np.ones((height, width), dtype=int)
+        index = 0
+        for i in range(len(horizontalPattern)):
+            generatedPattern = []
+            for j in horizontalPattern[i]:
+                start = int(solution[index])
+                generatedPattern.append([solution[index], j])
+                if start + j <= width :
+                    for n in range(j):
+                        img[i][start + n] = 0
+                else:
+                    for n in range(width - start):
+                        img[i][start + n] = 0
+                    # odejmuj punkty gdy blok wychodzi poza wiersz
+                    fitness -= abs(width - start - j)*10000
+                index += 1
+            fitness -= abs(gradeGenPatternV2(generatedPattern))
+        # ocenianie kolumn
+        for i in range(width):
+            column = []
+            for j in range(height):
+                column.append(img[j][i])
+            fitness += gradeFuncV2(column, verticalPattern[i])
+
+        return fitness
+
+    def getNumberOfBlocks(pattern):
+        num = 0
+        for i in pattern:
+            num += len(i)
+        return num
+
+    # funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
+    def getPercentageOfMutations(num_genes):
+        return 100/num_genes
+
+    gene_space = list(range(0, width))
+    num_genes = getNumberOfBlocks(horizontalPattern)
+    fitness_function = fitness_func
+    sol_per_pop = 200
+
+    num_parents_mating = 99
+    num_generations = 5000
+    keep_parents = 2
+    parent_selection_type = "sss"
+    # crossover_type = "single_point" # two points działa znacznie lepiej
+    crossover_type = "two_points"
+    mutation_type = "random"
+    mutation_percent_genes = getPercentageOfMutations(num_genes) # im mniejsza wartość tym lepiej
+
+    stop_criteria = ["reach_0", "saturate_200"]
+
+    ga_instance = pygad.GA(gene_space=gene_space,
+                        num_generations=num_generations,
+                        num_parents_mating=num_parents_mating,
+                        fitness_func=fitness_function,
+                        sol_per_pop=sol_per_pop,
+                        num_genes=num_genes,
+                        parent_selection_type=parent_selection_type,
+                        keep_parents=keep_parents,
+                        crossover_type=crossover_type,
+                        mutation_type=mutation_type,
+                        mutation_percent_genes=mutation_percent_genes,
+                        stop_criteria=stop_criteria)
+    ga_instance.run()
+    print("Generations:", ga_instance.generations_completed, "Fitness:", ga_instance.best_solution()[1])
+    genes = ga_instance.best_solution()[0]
+
+    img = createImgV2(genes, height, width, horizontalPattern)
+    plt.imshow(img, cmap="gray")
+
+    if ga_instance.best_solution()[1] != 0:
+        print("Mistakes in vertical paterns:")
+        for i in range(width):
+            column = []
+            for j in range(height):
+                column.append(img[j][i])
+            print(column, gradeFuncV2(column, verticalPattern[i]))
+
+    for i in range(height):
+        for j in range(width):
+            if img[i][j] == 0:
+                print("██", end="")
+            else:
+                print("░░", end="")
+        print("")
+
+    ga_instance.plot_fitness()
+    plt.show()
+    return ga_instance
+
+runAlgorythmV2(verticalM15, horizontalM15)
+# runAlgorythmColor(verticalMColor, horizontalMColor)

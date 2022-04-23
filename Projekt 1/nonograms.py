@@ -30,42 +30,50 @@ horizontalM30x40 = [[3,10,2,1,2],[2,4,4,2,1,3],[1,3,4,3,1,1,3],[3,9,2,2,2],[3,5,
 verticalMColor = [[[1,1]],[[1,1],[2,1]],[[2,1],[4,1]],[[1,2],[6,1]],[[3,2],[4,1]],[[4,2],[2,1],[1,3]],[[3,2],[2,1],[3,3]],[[1,1],[2,2],[1,1],[3,3]],[[2,1],[1,2],[1,1],[3,3],[2,1]],[[5,1],[5,3],[1,1]],[[4,1],[5,3]],[[2,1],[1,1],[4,3]],[[3,1],[2,3]],[[1,1]],[[1,1]]]
 horizontalMColor = [[[3,1]],[[5,1]],[[4,1],[3,1]],[[4,2],[4,1]],[[4,2],[1,1],[3,3]],[[3,2],[1,1],[4,3]],[[3,2],[1,1],[3,3]],[[6,1],[4,3]],[[5,1],[5,3]],[[2,1],[5,3]],[[3,1],[2,3],[1,1]],[[3,1],[2,1]],[[4,1]],[[1,1]]]
 
-def createImg(genes, height, width):
-    img = np.zeros((height, width))
-    index = 0
-    for i in range(height):
-        for j in range(width):
-            img[i][j] = abs(genes[index]-1)
-            index += 1
-    
-    return img
-
-def gradeFunc(solution, pattern):
-    solutionPattern = [0]
-    for i in solution:
-        if i == 0:
-            solutionPattern.append(0)
-        else:
-            if solutionPattern[-1] != 0:
-                solutionPattern[-1] = solutionPattern[-1] + 1
-            else:
-                solutionPattern.append(1)
-    filteredRowPatern = list(filter(lambda n: n != 0 , solutionPattern))
-
-    grade = -abs(sum(pattern) - sum(filteredRowPatern))
-
-    for i in range(len(pattern)):
-        if i < len(filteredRowPatern):
-            if pattern[i] != filteredRowPatern[i]:
-                grade -= abs(pattern[i] - filteredRowPatern[i])
-        else:
-            grade -= pattern[i]
-
-    return grade
+# funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
+def getPercentageOfMutations(num_genes):
+    return 100/num_genes
 
 def runAlgorythmV1(verticalPattern, horizontalPattern):
     height = len(verticalPattern)
     width = len(horizontalPattern)
+
+    def createImg(genes, height, width):
+        img = np.zeros((height, width))
+        index = 0
+        for i in range(height):
+            for j in range(width):
+                img[i][j] = abs(genes[index]-1)
+                index += 1
+        
+        return img
+
+    def gradeFunc(solution, pattern):
+        solutionPattern = [0]
+        for i in solution:
+            if i == 0:
+                solutionPattern.append(0)
+            else:
+                if solutionPattern[-1] != 0:
+                    solutionPattern[-1] = solutionPattern[-1] + 1
+                else:
+                    solutionPattern.append(1)
+        filteredRowPatern = list(filter(lambda n: n != 0 , solutionPattern))
+
+        grade = -abs(sum(pattern) - sum(filteredRowPatern))
+
+        for i in range(len(pattern)):
+            if i < len(filteredRowPatern):
+                if pattern[i] != filteredRowPatern[i]:
+                    grade -= abs(pattern[i] - filteredRowPatern[i])
+            else:
+                grade -= pattern[i]
+
+        if len(filteredRowPatern) > len(pattern):
+            for i in range(len(filteredRowPatern) - len(pattern)):
+                grade -= filteredRowPatern[i + len(pattern)]
+
+        return grade
 
     def fitness_func(solution, solution_idx):
         rowsGrade = 0
@@ -91,14 +99,13 @@ def runAlgorythmV1(verticalPattern, horizontalPattern):
     sol_per_pop = 100
 
     num_parents_mating = 42
-    num_generations = 500
+    num_generations = 5000
     keep_parents = 6
     parent_selection_type = "sss"
     crossover_type = "single_point"
-    # crossover_type = "two_points" # mniej efektywne
     mutation_type = "random"
-    mutation_percent_genes = 100/(height * width)
-    stop_criteria = "reach_0"
+    mutation_percent_genes = getPercentageOfMutations(num_genes)
+    stop_criteria = ["reach_0", "saturate_200"]
 
     ga_instance = pygad.GA(gene_space=gene_space,
                         num_generations=num_generations,
@@ -136,6 +143,7 @@ def runAlgorythmV1(verticalPattern, horizontalPattern):
 
     img = createImg(genes, height, width)
 
+    # wyświetlanie wygenerowanego obrazka w konsoli
     for i in range(height):
             for j in range(width):
                 if img[i][j] == 0:
@@ -149,60 +157,64 @@ def runAlgorythmV1(verticalPattern, horizontalPattern):
     plt.show()
     return ga_instance
 
-def createImgV2(genes, height, width, horizontalPattern):
-    img = np.ones((height, width), dtype=int)
-    index = 0
-    for i in range(len(horizontalPattern)):
-        for j in horizontalPattern[i]:
-            start = int(genes[index])
-            if start + j <= width :
-                for n in range(j):
-                    img[i][start + n] = 0
-            else:
-                for n in range(width - start):
-                    img[i][start + n] = 0
-            index += 1
-    
-    return img
-
-def gradeFuncV2(solution, pattern):
-    # tworzenie "wzoru" z wygenerowanych wartości
-    solutionPattern = [-1]
-    for i in solution:
-        if i == 1:
-            solutionPattern.append(-1)
-        else:
-            if solutionPattern[-1] != -1:
-                solutionPattern[-1] = solutionPattern[-1] + 1
-            else:
-                solutionPattern.append(1)
-    filteredRowPatern = list(filter(lambda n: n != -1 , solutionPattern))
-    # ocenianie wygenerowaniego "wzoru"
-    grade = -abs(sum(pattern) - sum(filteredRowPatern))
-
-    for i in range(len(pattern)):
-        if i < len(filteredRowPatern):
-            if pattern[i] != filteredRowPatern[i]:
-                grade -= abs(pattern[i] - filteredRowPatern[i])
-        else:
-            grade -= pattern[i]
-
-    return grade
-
-def gradeGenPatternV2(pattern):
-    # pattern[i][0] początek bloku
-    # pattern[i][0] + pattern[i][1] ostatni index zajmowany przez ten blok (długość bloku + 1 miejsce przerwy)
-    grade = 0
-    for i in range(len(pattern)):
-        # prównywanie obecnego bloku do wszystkich poprzednich
-        for j in range(i):
-            if pattern[j][0] + pattern[j][1] >= pattern[i][0]:
-                grade -= 1000
-    return grade
-
 def runAlgorythmV2(verticalPattern, horizontalPattern):
     height = len(horizontalPattern)
     width = len(verticalPattern)
+
+    def createImgV2(genes, height, width, horizontalPattern):
+        img = np.ones((height, width), dtype=int)
+        index = 0
+        for i in range(len(horizontalPattern)):
+            for j in horizontalPattern[i]:
+                start = int(genes[index])
+                if start + j <= width :
+                    for n in range(j):
+                        img[i][start + n] = 0
+                else:
+                    for n in range(width - start):
+                        img[i][start + n] = 0
+                index += 1
+        
+        return img
+
+    def gradeFuncV2(solution, pattern):
+        # tworzenie "wzoru" z wygenerowanych wartości
+        solutionPattern = [-1]
+        for i in solution:
+            if i == 1:
+                solutionPattern.append(-1)
+            else:
+                if solutionPattern[-1] != -1:
+                    solutionPattern[-1] = solutionPattern[-1] + 1
+                else:
+                    solutionPattern.append(1)
+        filteredRowPatern = list(filter(lambda n: n != -1 , solutionPattern))
+        # ocenianie wygenerowaniego "wzoru"
+        grade = -abs(sum(pattern) - sum(filteredRowPatern))
+
+        for i in range(len(pattern)):
+            if i < len(filteredRowPatern):
+                if pattern[i] != filteredRowPatern[i]:
+                    grade -= abs(pattern[i] - filteredRowPatern[i])
+            else:
+                grade -= pattern[i]
+
+        if len(filteredRowPatern) > len(pattern):
+                for i in range(len(filteredRowPatern) - len(pattern)):
+                    grade -= filteredRowPatern[i + len(pattern)]
+
+        return grade
+
+    def gradeGenPatternV2(pattern):
+        # pattern[i][0] początek bloku
+        # pattern[i][0] + pattern[i][1] ostatni index zajmowany przez ten blok (długość bloku + 1 miejsce przerwy)
+        grade = 0
+        for i in range(len(pattern)):
+            # prównywanie obecnego bloku do wszystkich poprzednich
+            for j in range(i):
+                if pattern[j][0] + pattern[j][1] >= pattern[i][0]:
+                    grade -= 1000
+        return grade
 
     def fitness_func(solution, solution_idx):
         fitness = 0
@@ -238,10 +250,6 @@ def runAlgorythmV2(verticalPattern, horizontalPattern):
         for i in pattern:
             num += len(i)
         return num
-
-    # funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
-    def getPercentageOfMutations(num_genes):
-        return 100/num_genes
 
     gene_space = list(range(0, width))
     num_genes = getNumberOfBlocks(horizontalPattern)
@@ -428,10 +436,6 @@ def runAlgorythmColorV2(verticalPattern, horizontalPattern, colors):
             num += len(i)
         return num
 
-    # funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
-    def getPercentageOfMutations(num_genes):
-        return 100/num_genes
-
     gene_space = list(range(0, width))
     num_genes = getNumberOfBlocks(horizontalPattern)
     fitness_function = fitness_func
@@ -597,7 +601,7 @@ def runAlgorythmColorV1(verticalPattern, horizontalPattern, colors):
     crossover_type = "single_point"
     # crossover_type = "two_points" # mniej efektywne
     mutation_type = "random"
-    mutation_percent_genes = 100/(height * width)
+    mutation_percent_genes = getPercentageOfMutations(num_genes)
     stop_criteria = ["reach_0", "saturate_200"]
 
     ga_instance = pygad.GA(gene_space=gene_space,
@@ -641,5 +645,5 @@ def runAlgorythmColorV1(verticalPattern, horizontalPattern, colors):
     plt.show()
     return ga_instance
 
-runAlgorythmV2(verticalM, horizontalM)
+runAlgorythmV2(verticalM102, horizontalM102)
 # runAlgorythmColorV1(verticalMColor, horizontalMColor, {1: [0, 0, 0], 2: [110, 110, 110], 3: [176, 30, 30]} )

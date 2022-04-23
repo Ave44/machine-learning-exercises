@@ -1,3 +1,4 @@
+from math import floor
 import numpy as np
 import pyswarms as ps
 from pyswarms.utils.plotters import plot_cost_history
@@ -56,6 +57,10 @@ def runAlgorythmSwarmV1(verticalPattern, horizontalPattern):
             else:
                 grade -= pattern[i]
 
+        if len(filteredRowPatern) > len(pattern):
+            for i in range(len(filteredRowPatern) - len(pattern)):
+                grade -= filteredRowPatern[i + len(pattern)]
+
         return grade
 
     def createImg(genes, height, width):
@@ -104,7 +109,7 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
     height = len(verticalPattern)
     width = len(horizontalPattern)
     blocks = getNumberOfBlocks(horizontalPattern)
-    x_max = np.full((blocks), width-1, dtype=int)
+    x_max = np.full((blocks), width, dtype=int)
     x_min = np.full((blocks), 0, dtype=int)
     my_bounds = (x_min, x_max)
     options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
@@ -129,6 +134,10 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
             else:
                 grade -= pattern[i]
 
+        if len(filteredRowPatern) > len(pattern):
+            for i in range(len(filteredRowPatern) - len(pattern)):
+                grade -= filteredRowPatern[i + len(pattern)]
+
         return grade
 
     def gradeGenPatternV2(pattern):
@@ -137,6 +146,8 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
             for j in range(i):
                 if pattern[j][0] + pattern[j][1] >= pattern[i][0]:
                     grade -= 1000
+                if pattern[j][0] == pattern[i][0]: # dodatkowe ujemne punkty żeby bloki na siebie nie nachodziły
+                    grade -= 100000
         return grade
 
     def fitness_func(solution):
@@ -147,7 +158,7 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
             generatedPattern = []
             for j in horizontalPattern[i]:
                 start = int(solution[index])
-                generatedPattern.append([round(solution[index]), j])
+                generatedPattern.append([floor(solution[index]), j])
                 if start + j <= width :
                     for n in range(j):
                         img[i][start + n] = 0
@@ -156,14 +167,17 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
                         img[i][start + n] = 0
                     fitness -= abs(width - start - j)*10000
                 index += 1
-            fitness -= abs(gradeGenPatternV2(generatedPattern))
+            fitness += gradeGenPatternV2(generatedPattern)
+        columnMistakes = 0
         for i in range(width):
             column = []
             for j in range(height):
                 column.append(img[j][i])
-            fitness += gradeFuncV2(column, verticalPattern[i])
+            columnMistakes += gradeFuncV2(column, verticalPattern[i])
 
-        return fitness
+        if columnMistakes != 0:
+            return columnMistakes + fitness
+        return 0
 
     def createImgV2(genes, height, width, horizontalPattern):
         img = np.ones((height, width), dtype=int)
@@ -186,12 +200,12 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
         j = [-fitness_func(swarm[i]) for i in range(n_particles)]
         return np.array(j)
 
-    optimizer = ps.single.GlobalBestPSO(n_particles=1000, dimensions=blocks, options=options, bounds=my_bounds)
-    result = optimizer.optimize(f, iters=100)
+    optimizer = ps.single.GlobalBestPSO(n_particles=20000, dimensions=blocks, options=options, bounds=my_bounds)
+    result = optimizer.optimize(f, iters=50)
 
     generatedPattern = result[1]
     for i in range(len(generatedPattern)):
-        generatedPattern[i] = round(generatedPattern[i])
+        generatedPattern[i] = floor(generatedPattern[i])
 
     print("Block positions: ", generatedPattern)
     img = createImgV2(generatedPattern, height, width, horizontalPattern)

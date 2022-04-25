@@ -1,6 +1,7 @@
 import pygad
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 # motyl
 verticalM = [[3,2],[1,3,2],[2,1,2,1],[2,1,1],[2,1],[1,2,1],[6,6],[11],[6,6],[1,1,1],[1,1,1],[1,1],[1,1,2,1],[1,1,2],[3]]
@@ -29,6 +30,7 @@ horizontalM30x40 = [[3,10,2,1,2],[2,4,4,2,1,3],[1,3,4,3,1,1,3],[3,9,2,2,2],[3,5,
 # ptak
 verticalMColor = [[[1,1]],[[1,1],[2,1]],[[2,1],[4,1]],[[1,2],[6,1]],[[3,2],[4,1]],[[4,2],[2,1],[1,3]],[[3,2],[2,1],[3,3]],[[1,1],[2,2],[1,1],[3,3]],[[2,1],[1,2],[1,1],[3,3],[2,1]],[[5,1],[5,3],[1,1]],[[4,1],[5,3]],[[2,1],[1,1],[4,3]],[[3,1],[2,3]],[[1,1]],[[1,1]]]
 horizontalMColor = [[[3,1]],[[5,1]],[[4,1],[3,1]],[[4,2],[4,1]],[[4,2],[1,1],[3,3]],[[3,2],[1,1],[4,3]],[[3,2],[1,1],[3,3]],[[6,1],[4,3]],[[5,1],[5,3]],[[2,1],[5,3]],[[3,1],[2,3],[1,1]],[[3,1],[2,1]],[[4,1]],[[1,1]]]
+colors = {1: [0, 0, 0], 2: [110, 110, 110], 3: [176, 30, 30]}
 
 # funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
 def getPercentageOfMutations(num_genes):
@@ -645,5 +647,31 @@ def runAlgorythmColorV1(verticalPattern, horizontalPattern, colors):
     plt.show()
     return ga_instance
 
-runAlgorythmV2(verticalM102, horizontalM102)
-# runAlgorythmColorV1(verticalMColor, horizontalMColor, {1: [0, 0, 0], 2: [110, 110, 110], 3: [176, 30, 30]} )
+# żeby użyć tej funkcji należy zakomentować część z wyświetlaniem obrazów i wykresów
+def measure(func, times, verticalPattern, horizontalPattern):
+    timeArray = []
+    fitnessArray = []
+    generationsArray = []
+
+    for i in range(times):
+        start = time.time()
+        instance = func(verticalPattern, horizontalPattern)
+        end = time.time()
+        timeArray.append(end - start)
+        fitnessArray.append(instance.best_solution()[1])
+        generationsArray.append(instance.generations_completed)
+        print("===", i + 1, "/", times, "===")
+
+    solved = 0
+    for i in fitnessArray:
+        if i == 0:
+            solved += 1
+
+    print("Time: ", timeArray, " Average: ", sum(timeArray)/times)
+    print("Fitness: ", fitnessArray, " Average: ", sum(fitnessArray)/times, " Solved: ", solved)
+    print("Generations: ", generationsArray, " Average: ", sum(generationsArray)/times)
+
+measure(runAlgorythmV2, 100, verticalM, horizontalM)
+
+# runAlgorythmV1(verticalM10, horizontalM10)
+# runAlgorythmColorV1(verticalMColor, horizontalMColor, colors )

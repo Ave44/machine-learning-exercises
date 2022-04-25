@@ -3,6 +3,7 @@ import numpy as np
 import pyswarms as ps
 from pyswarms.utils.plotters import plot_cost_history
 import matplotlib.pyplot as plt
+import time
 
 verticalM = [[3,2],[1,3,2],[2,1,2,1],[2,1,1],[2,1],[1,2,1],[6,6],[11],[6,6],[1,1,1],[1,1,1],[1,1],[1,1,2,1],[1,1,2],[3]]
 horizontalM = [[1,1],[1,1],[1,1],[1,1],[1,3],[3,3],[1,2,3,3],[1,1,2,1,1,1],[1,5,1,1],[2,3,1],[2,3,1],[1,3,1],[1,1,3,1,1],[2,5,1],[4,1,4]]
@@ -78,26 +79,27 @@ def runAlgorythmSwarmV1(verticalPattern, horizontalPattern):
         j = [-fitness_func(swarm[i]) for i in range(n_particles)]
         return np.array(j)
 
-    optimizer = ps.single.GlobalBestPSO(n_particles=1000, dimensions=height*width, options=options, bounds=my_bounds)
-    result = optimizer.optimize(f, iters=100)
+    optimizer = ps.single.GlobalBestPSO(n_particles=100, dimensions=height*width, options=options, bounds=my_bounds)
+    result = optimizer.optimize(f, iters=1000)
 
     pixels = result[1]
     for i in range(len(pixels)):
         pixels[i] = round(pixels[i])
 
     img = createImg(pixels, height, width)
-    plt.imshow(img, cmap="gray")
+    # plt.imshow(img, cmap="gray")
 
-    for i in range(height):
-        for j in range(width):
-            if img[i][j] == 0:
-                print("██", end="")
-            else:
-                print("░░", end="")
-        print("")
+    # for i in range(height):
+    #     for j in range(width):
+    #         if img[i][j] == 0:
+    #             print("██", end="")
+    #         else:
+    #             print("░░", end="")
+    #     print("")
 
-    plot_cost_history(optimizer.cost_history)
-    plt.show()
+    # plot_cost_history(optimizer.cost_history)
+    # plt.show()
+    return result
 
 def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
     def getNumberOfBlocks(pattern):
@@ -222,4 +224,25 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
     plot_cost_history(optimizer.cost_history)
     plt.show()
 
-runAlgorythmSwarmV2(verticalM10, horizontalM10)
+def measureSwarm(func, times, verticalPattern, horizontalPattern):
+    timeArray = []
+    fitnessArray = []
+
+    for i in range(times):
+        start = time.time()
+        instance = func(verticalPattern, horizontalPattern)
+        end = time.time()
+        timeArray.append(end - start)
+        fitnessArray.append(instance[0])
+        print("===", i + 1, "/", times, "===")
+
+    solved = 0
+    for i in fitnessArray:
+        if i == 0:
+            solved += 1
+
+    print("Time: ", timeArray, " Average: ", sum(timeArray)/times)
+    print("Fitness: ", fitnessArray, " Average: ", sum(fitnessArray)/times, " Solved: ", solved)
+
+measureSwarm(runAlgorythmSwarmV1, 10, verticalM, horizontalM)
+# runAlgorythmSwarmV1(verticalM10, horizontalM10)

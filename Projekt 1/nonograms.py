@@ -1,3 +1,4 @@
+from cProfile import label
 import pygad
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,6 +32,16 @@ horizontalM30x40 = [[3,10,2,1,2],[2,4,4,2,1,3],[1,3,4,3,1,1,3],[3,9,2,2,2],[3,5,
 verticalMColor = [[[1,1]],[[1,1],[2,1]],[[2,1],[4,1]],[[1,2],[6,1]],[[3,2],[4,1]],[[4,2],[2,1],[1,3]],[[3,2],[2,1],[3,3]],[[1,1],[2,2],[1,1],[3,3]],[[2,1],[1,2],[1,1],[3,3],[2,1]],[[5,1],[5,3],[1,1]],[[4,1],[5,3]],[[2,1],[1,1],[4,3]],[[3,1],[2,3]],[[1,1]],[[1,1]]]
 horizontalMColor = [[[3,1]],[[5,1]],[[4,1],[3,1]],[[4,2],[4,1]],[[4,2],[1,1],[3,3]],[[3,2],[1,1],[4,3]],[[3,2],[1,1],[3,3]],[[6,1],[4,3]],[[5,1],[5,3]],[[2,1],[5,3]],[[3,1],[2,3],[1,1]],[[3,1],[2,1]],[[4,1]],[[1,1]]]
 colors = {1: [0, 0, 0], 2: [110, 110, 110], 3: [176, 30, 30]}
+
+# pszczoła
+verticalMColor10x10 = [[[3,1]],[[1,1],[3,2],[1,1]],[[3,1],[2,1],[1,1],[2,1],[1,1]],[[1,1],[1,1],[5,2],[1,1]],[[1,1],[8,1]],[[1,1],[1,1],[5,3],[1,1]],[[1,1],[7,1]],[[1,1],[1,1],[1,1],[3,3],[1,1]],[[1,1],[3,1]],[[1,1]]]
+horizontalMColor10x10 = [[[2,1],[2,1]],[[1,1],[1,1],[1,1]],[[1,1],[1,1],[1,1]],[[5,1]],[[1,1],[2,2],[1,1],[1,2],[2,1]],[[1,1],[3,2],[1,1],[1,2],[1,1],[1,2],[1,1]],[[1,1],[1,2],[1,1],[1,2],[1,1],[1,2],[1,1],[1,2],[2,1]],[[1,1],[3,2],[1,1],[1,2],[1,1],[1,2],[1,1]],[[1,1],[2,2],[1,1],[1,2],[2,1]],[[5,1]]]
+colors10x10 = {1: [0, 0, 0], 2: [255, 238, 0]}
+
+# motyl kolorowy
+verticalMColor9x9 = [[[2,1]],[[1,1],[2,2],[1,1],[1,1]],[[1,1],[1,2],[1,3],[1,2],[1,1],[1,2],[1,1]],[[1,1],[1,2],[2,3],[1,2],[1,1]],[[4,1]],[[1,1],[1,2],[2,3],[1,2],[1,1]],[[1,1],[1,2],[1,3],[1,2],[1,1],[1,2],[1,1]],[[1,1],[2,2],[1,1],[1,1]],[[2,1]]]
+horizontalMColor9x9 = [[],[[2,1],[2,1]],[[1,1],[2,2],[1,1],[1,1],[2,2],[1,1]],[[1,1],[1,2],[1,3],[1,2],[1,1],[1,2],[1,3],[1,2],[1,1]],[[1,1],[1,2],[1,3],[1,1],[1,3],[1,2],[1,1]],[[1,1],[1,3],[1,1],[1,3],[1,1]],[[1,1],[1,2],[1,1],[1,2],[1,1]],[[2,1],[2,1]],[]]
+colors9x9 = {1: [0, 0, 0], 2: [255, 196, 0], 3: [255, 238, 0]}
 
 # funkcja zwraca najniejszą możliwą wartość tak żeby przynajmniej jeden gen został wybrany
 def getPercentageOfMutations(num_genes):
@@ -447,7 +458,7 @@ def runAlgorythmColorV2(verticalPattern, horizontalPattern, colors):
     num_generations = 5000
     keep_parents = 2
     parent_selection_type = "sss"
-    crossover_type = "single_point"
+    crossover_type = "two_points"
     mutation_type = "random"
     mutation_percent_genes = getPercentageOfMutations(num_genes) # im mniejsza wartość tym lepiej
 
@@ -671,7 +682,90 @@ def measure(func, times, verticalPattern, horizontalPattern):
     print("Fitness: ", fitnessArray, " Average: ", sum(fitnessArray)/times, " Solved: ", solved)
     print("Generations: ", generationsArray, " Average: ", sum(generationsArray)/times)
 
-measure(runAlgorythmV2, 100, verticalM, horizontalM)
+def measureColor(func, times, verticalPattern, horizontalPattern, colors):
+    timeArray = []
+    fitnessArray = []
+    generationsArray = []
 
+    for i in range(times):
+        start = time.time()
+        instance = func(verticalPattern, horizontalPattern, colors)
+        end = time.time()
+        timeArray.append(end - start)
+        fitnessArray.append(instance.best_solution()[1])
+        generationsArray.append(instance.generations_completed)
+        print("===", i + 1, "/", times, "===")
+
+    solved = 0
+    for i in fitnessArray:
+        if i == 0:
+            solved += 1
+
+    print("Time: ", timeArray, " Average: ", sum(timeArray)/times)
+    print("Fitness: ", fitnessArray, " Average: ", sum(fitnessArray)/times, " Solved: ", solved)
+    print("Generations: ", generationsArray, " Average: ", sum(generationsArray)/times)
+
+# measureColor(runAlgorythmColorV2, 10, verticalMColor10x10, horizontalMColor10x10, colors10x10)
 # runAlgorythmV1(verticalM10, horizontalM10)
-# runAlgorythmColorV1(verticalMColor, horizontalMColor, colors )
+# runAlgorythmColorV1(verticalMColor, horizontalMColor, colors)
+
+# algorytm = [avgTime, abs(avgFit), avgGen, abs(bestFit)]
+a11 = [10.62, 4.74, 320.59, 0]
+a12 = [33.3, 25.58, 556.23, 12]
+
+a21 = [21.21, 6.18, 325.49, 0]
+a22 = [75.1, 37.26, 622.75, 8]
+
+a31 = [69.95, 34.2, 1000, 20]
+a32 = [155.17, 94.6, 1000, 76]
+
+a41 = [245.67, 117.4, 50, 0]
+a42 = [509.06, 8606.8, 50, 6086]
+
+a51 = [22.93, 269.7, 476.59, 230]
+a52 = [70.64, 231.1, 891.1, 183]
+
+a61 = [49.42, 1658.3, 456.7, 54]
+a62 = [67.71, 55.7, 541.3, 45]
+results10 = [a11,a21,a31,a41,a51,a61]
+results15 = [a12,a22,a32,a42,a52,a62]
+res10 = [[],[],[],[]]
+res15 = [[],[],[],[]]
+for i in range(6):
+    res10[0].append(results10[i][0])
+    res10[1].append(results10[i][1])
+    res10[2].append(results10[i][2])
+    res10[3].append(results10[i][3])
+    res15[0].append(results15[i][0])
+    res15[1].append(results15[i][1])
+    res15[2].append(results15[i][2])
+    res15[3].append(results15[i][3])
+
+X = np.arange(len(res10[0]))
+
+plt.figure(figsize=(8,8))
+plt.subplot(2,2,1)
+plt.bar(X + 0.00, res10[0], color = '#00e6fc', width = 0.4)
+plt.bar(X + 0.4, res15[0], color = '#00b3c4', width = 0.4)
+plt.title("Average Time")
+plt.xticks([r + 0.20 for r in range(len(res10[0]))], ['g1', 'g2', 'r1', 'r2', 'c1', 'c2'])
+
+plt.subplot(2,2,2)
+plt.bar(X + 0.00, res10[1], color = '#5bd978', width = 0.4)
+plt.bar(X + 0.4, res15[1], color = '#42b85d', width = 0.4)
+plt.title("Average Fitness")
+plt.xticks([r + 0.20 for r in range(len(res10[1]))], ['g1', 'g2', 'r1', 'r2', 'c1', 'c2'])
+
+plt.subplot(2,2,3)
+plt.bar(X + 0.00, res10[3], color = '#f2251b', width = 0.4)
+plt.bar(X + 0.4, res15[3], color = '#de6762', width = 0.4)
+plt.title("Best Fitness")
+plt.xticks([r + 0.20 for r in range(len(res10[3]))], ['g1', 'g2', 'r1', 'r2', 'c1', 'c2'])
+
+plt.subplot(2,2,4)
+plt.bar(X + 0.00, res10[2], color = '#f2ee74', width = 0.4)
+plt.bar(X + 0.4, res15[2], color = '#d6d245', width = 0.4)
+plt.title("Average Amount of Generations")
+plt.xticks([r + 0.20 for r in range(len(res10[2]))], ['g1', 'g2', 'r1', 'r2', 'c1', 'c2'])
+
+plt.show()

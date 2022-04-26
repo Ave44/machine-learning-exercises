@@ -87,18 +87,18 @@ def runAlgorythmSwarmV1(verticalPattern, horizontalPattern):
         pixels[i] = round(pixels[i])
 
     img = createImg(pixels, height, width)
-    # plt.imshow(img, cmap="gray")
+    plt.imshow(img, cmap="gray")
 
-    # for i in range(height):
-    #     for j in range(width):
-    #         if img[i][j] == 0:
-    #             print("██", end="")
-    #         else:
-    #             print("░░", end="")
-    #     print("")
+    for i in range(height):
+        for j in range(width):
+            if img[i][j] == 0:
+                print("██", end="")
+            else:
+                print("░░", end="")
+        print("")
 
-    # plot_cost_history(optimizer.cost_history)
-    # plt.show()
+    plot_cost_history(optimizer.cost_history)
+    plt.show()
     return result
 
 def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
@@ -177,9 +177,7 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
                 column.append(img[j][i])
             columnMistakes += gradeFuncV2(column, verticalPattern[i])
 
-        if columnMistakes != 0:
-            return columnMistakes + fitness
-        return 0
+        return columnMistakes + fitness
 
     def createImgV2(genes, height, width, horizontalPattern):
         img = np.ones((height, width), dtype=int)
@@ -223,6 +221,7 @@ def runAlgorythmSwarmV2(verticalPattern, horizontalPattern):
 
     plot_cost_history(optimizer.cost_history)
     plt.show()
+    return result
 
 def measureSwarm(func, times, verticalPattern, horizontalPattern):
     timeArray = []
@@ -244,5 +243,5 @@ def measureSwarm(func, times, verticalPattern, horizontalPattern):
     print("Time: ", timeArray, " Average: ", sum(timeArray)/times)
     print("Fitness: ", fitnessArray, " Average: ", sum(fitnessArray)/times, " Solved: ", solved)
 
-measureSwarm(runAlgorythmSwarmV1, 10, verticalM, horizontalM)
-# runAlgorythmSwarmV1(verticalM10, horizontalM10)
+# measureSwarm(runAlgorythmSwarmV2, 10, verticalM10, horizontalM10)
+runAlgorythmSwarmV2(verticalM10, horizontalM10)

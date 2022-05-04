@@ -4,7 +4,8 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import numpy as np
 
-df = pd.read_csv("./Lab06/iris.csv")
+# df = pd.read_csv("./Lab06/iris.csv") # dla Windows'a
+df = pd.read_csv("iris.csv") # dla Linux'a
 print("\n=== Początkowe dane ===\n", df, sep="")
 print("= variancje =")
 print(np.var(df['sepallength']),np.var(df['sepalwidth']),np.var(df['petallength']),np.var(df['petalwidth']))

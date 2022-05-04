@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 
 missing_values = ["n/a", "na", "--", "-"]
-df = pd.read_csv("./Lab06/iris_with_errors.csv", na_values = missing_values)
+# df = pd.read_csv("./Lab06/iris_with_errors.csv", na_values = missing_values) # dla Windows'a
+df = pd.read_csv("iris_with_errors.csv", na_values = missing_values) # dla Linux'a
 
 # a i b
 

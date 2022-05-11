@@ -5,8 +5,8 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 
 # Import danych
-df = pd.read_csv("./Lab07/diabetes.csv") # dla Windows'a
-# df = pd.read_csv("diabetes.csv") # dla Linux'a
+# df = pd.read_csv("./Lab07/diabetes.csv") # dla Windows'a
+df = pd.read_csv("diabetes.csv") # dla Linux'a
 
 feature_cols = ['pregnant-times','glucose-concentr','blood-pressure','skin-thickness','insulin','mass-index','pedigree-func','age']
 features = df[feature_cols]
@@ -33,7 +33,7 @@ class_pred = clf.predict(test_features)
 for i in range(len(test_features)):
     class_true.append(test_labels.iloc[i])
 
-labels = ['tested_positive','tested_negative']
+labels = ['tested_positive', 'tested_negative']
 print('\nConfusion matrix:\n')
 matrix = confusion_matrix(class_true, class_pred, labels=labels)
 

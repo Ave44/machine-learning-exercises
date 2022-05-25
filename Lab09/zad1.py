@@ -1,1 +1,0 @@
-# https://www.kaggle.com/datasets/sagyamthapa/handwritten-math-symbols

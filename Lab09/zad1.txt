@@ -1,0 +1,49 @@
+A)
+
+Warstwa typu pooling służy zmiejszenia wielkości obrazka.
+
+np warstwa pooling typu "max pooling" o rozmiarze 2x2 dla obrazka:
+[[1, 2, 4, 5],
+ [2, 3, 3, 5],
+ [6, 5, 8, 6],
+ [3, 5, 5, 8]]
+przekształci go w obrazek:
+[[3, 5],
+ [6, 8]]
+
+B)
+
+Warstwa splotowa (convolutional layer) jest warstwą aplikującą konwolucję do danego obrazka,
+czyli zmienia obrazek zgodnie z podanym flitrem (kernel'em). Służy ona do wykrywania konkretnych
+cech obrazu, na przykład krawędzi pionowych, krawędzi poziomych, lub dowolnie modyfikować obraz,
+na przykład wygładzając lub wyostrzając go.
+
+C)
+
+Sobel filter - wariant do wykrywania krawędzi pionowych
+[[-1, 0, 1],
+ [-2, 0, 2],
+ [-1, 0, 1]]
+
+Obrazek ten sam co z podpunktu A:
+[[1, 2, 4, 5],
+ [2, 3, 3, 5],
+ [6, 5, 8, 6],
+ [3, 5, 5, 8]]
+
+Obrazek po zastosowaniu filtra (bez padding'u)
+[[7, 8],
+ [7, 7]]
+
+(sobelFilter.jpg jest vizualizacją powyższej transformacji)
+
+D)
+
+Ta sieć ma:
+2 warstwy typu pooling
+2 warstwy typu conv
+2 warstwy w pełni połączone
+
+kolejność występowania warstw:
+(conv - warstwa typu conv, pool - warstwa typu pooling, conn - warstwa w pełni połączona)
+input-> conv-> pool-> conv-> pool-> conn-> conn-> output

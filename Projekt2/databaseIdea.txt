@@ -1,0 +1,2 @@
+https://www.kaggle.com/datasets/sagyamthapa/handwritten-math-symbols
+https://www.kaggle.com/code/yassineghouzam/introduction-to-cnn-keras-0-997-top-6

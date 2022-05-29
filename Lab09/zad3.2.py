@@ -24,7 +24,7 @@ def define_model():
 	model.add(Dense(128, activation='relu', kernel_initializer='he_uniform'))
 	model.add(Dense(1, activation='sigmoid'))
 	# compile model
-	opt = SGD(lr=0.001, momentum=0.9)
+	opt = SGD(learning_rate=0.001, momentum=0.9)
 	model.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])
 	return model
 
@@ -76,7 +76,7 @@ def run_test_harness():
 
     # fit model
     history = model.fit(train_it, steps_per_epoch=len(train_it),
-        validation_data=test_it, validation_steps=len(test_it), epochs=20, verbose=1)
+        validation_data=test_it, validation_steps=len(test_it), epochs=50, verbose=1)
     # evaluate model
     _, acc = model.evaluate(test_it, steps=len(test_it), verbose=1)
     print('> %.3f' % (acc * 100.0))

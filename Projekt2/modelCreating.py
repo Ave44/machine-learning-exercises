@@ -7,6 +7,8 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
+# from keras.losses import CategoricalCrossentropy
+# from keras.utils.np_utils import to_categorical
 
 imgSize = 40
 
@@ -43,35 +45,30 @@ def summarize_diagnostics(history):
     pyplot.plot(history.history['val_accuracy'], color='orange', label='test')
     # save plot to file
     filename = sys.argv[0].split('/')[-1]
-    pyplot.savefig("Lab09/" + filename + '_plot.png')
+    pyplot.savefig("Projekt2/" + filename + '_plot.png')
     pyplot.close()
 
 
 model = define_model()
+
 # create data generator
-#datagen = ImageDataGenerator(rescale=1.0/255.0)
 datagen = ImageDataGenerator(
-    rescale=1.0/255.0,
-    featurewise_center=False,  # set input mean to 0 over the dataset
-    samplewise_center=False,  # set each sample mean to 0
-    featurewise_std_normalization=False,  # divide inputs by std of the dataset
-    samplewise_std_normalization=False,  # divide each input by its std
-    zca_whitening=False,  # apply ZCA whitening
+    rescale=1.0/255.0, # rescaling image values
     rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
-    zoom_range = 0.1, # Randomly zoom image 
+    zoom_range=0.1,  # Randomly zoom image
     width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
     height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
     )
 
 # prepare iterators
 train_it = datagen.flow_from_directory('Projekt2/data/train/',
-    class_mode='categorical', batch_size=200, target_size=(200, 200))
+    class_mode='categorical', batch_size=140, target_size=(200, 200))
 test_it = datagen.flow_from_directory('Projekt2/data/test/',
-    class_mode='categorical', batch_size=200, target_size=(200, 200))
+    class_mode='categorical', batch_size=140, target_size=(200, 200))
 
 # fit model
-history = model.fit(train_it, steps_per_epoch=len(train_it),
-    validation_data=test_it, validation_steps=len(test_it), epochs=50, verbose=1)
+history = model.fit(train_it, steps_per_epoch=len(train_it),# to_categorical(train_it)
+    validation_data=test_it, validation_steps=len(test_it), epochs=20, verbose=1)
 
 # evaluate model
 _, acc = model.evaluate(test_it, steps=len(test_it), verbose=1)
@@ -80,6 +77,6 @@ print('> %.3f' % (acc * 100.0))
 # learning curves
 summarize_diagnostics(history)
 
-model.save('Projekt2/trainedModel')
+model.save('Projekt2/trainedModelV1')
 
 

@@ -1,6 +1,9 @@
 from tensorflow import keras
 from keras.preprocessing.image import ImageDataGenerator
+import numpy as np
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 model = keras.models.load_model('Projekt2/trainedModelV1')
 imgSize = 50
@@ -19,16 +22,39 @@ test_it = datagen.flow_from_directory('Projekt2/data/test/',
     class_mode='categorical', batch_size=140, target_size=(200, 200))
 
 
-# testLabels = []
-# predictedLabels = []
-# for i in [1,2]:#range(test_it.__len__()):
-#     img, label = test_it.next()
-#     testLabels.append(label)
-#     predictedLabels.append(model.predict(img).argmax(axis=-1))
+testLabels = []
+testImages = []
+predictedLabels = []
+for i in tqdm(range(test_it.__len__())):
+    img, label = test_it.next()
+    for index in range(label.shape[0]):
+        testLabels.append(label[index])
+        testImages.append(img[index])
 
-# print(predictedLabels)
+        # # predictedLabels.append(np.argmax(model.predict(img),axis=1))
+        # predictedLabel = model.predict(img)
+        # predictedLabels.append(predictedLabel)
+
+predicted = predictedLabel = model.predict(test_it)
+
+predicted_classes = np.argmax(predicted, axis = 1)
+for i in predicted:
+    print(i)
+print(predicted_classes,len(predicted_classes))
+predicted_true = np.argmax(testLabels,axis = 1) 
 
 
-# evaluate model
-_, acc = model.evaluate(test_it, steps=len(test_it), verbose=1)
-print('> %.3f' % (acc * 100.0))
+
+labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", ".", "=", "*", "-", "+", "x", "y"]
+
+cm = confusion_matrix(predicted_true, predicted_classes) 
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+
+disp.plot(cmap=plt.cm.Blues)
+plt.show()
+
+
+# # evaluate model
+# _, acc = model.evaluate(test_it, steps=len(test_it), verbose=1)
+# print('> %.3f' % (acc * 100.0))

@@ -7,8 +7,6 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
-# from keras.losses import CategoricalCrossentropy
-# from keras.utils.np_utils import to_categorical
 
 imgSize = 40
 

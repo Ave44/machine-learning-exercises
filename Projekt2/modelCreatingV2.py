@@ -13,7 +13,7 @@ def define_model():
     model.add(Conv2D(filters = 32, kernel_size = (5,5),padding = 'Same', activation ='relu', input_shape = (28,28,1)))
     model.add(Conv2D(filters = 32, kernel_size = (5,5),padding = 'Same', activation ='relu'))
     model.add(MaxPooling2D(pool_size=(2,2)))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.25)) # zapobiega przeuczeniu i pomaga w zwalczaniu szumów (noise)
     model.add(Conv2D(filters = 64, kernel_size = (3,3),padding = 'Same', activation ='relu'))
     model.add(Conv2D(filters = 64, kernel_size = (3,3),padding = 'Same', activation ='relu'))
     model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2)))
@@ -42,8 +42,7 @@ def summarize_diagnostics(history):
     pyplot.plot(history.history['accuracy'], color='blue', label='train')
     pyplot.plot(history.history['val_accuracy'], color='orange', label='test')
     # save plot to file
-    filename = sys.argv[0].split('/')[-1]
-    pyplot.savefig("Projekt2/" + filename + '2_plot.png')
+    pyplot.savefig("Projekt2/obrazy/modelV2creatingChanges.png")
     pyplot.close()
 
 
@@ -65,7 +64,7 @@ test_it = datagen.flow_from_directory('Projekt2/data/test/',
     class_mode='categorical', batch_size=140, target_size=(28, 28), color_mode='grayscale')
 
 # fit model
-history = model.fit(train_it, steps_per_epoch=len(train_it),# to_categorical(train_it)
+history = model.fit(train_it, steps_per_epoch=len(train_it),
     validation_data=test_it, validation_steps=len(test_it), epochs=50, verbose=1)
 
 # evaluate model

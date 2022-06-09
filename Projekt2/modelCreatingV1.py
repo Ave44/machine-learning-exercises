@@ -1,4 +1,3 @@
-import sys
 from matplotlib import pyplot
 from keras.models import Sequential
 from keras.layers import Conv2D

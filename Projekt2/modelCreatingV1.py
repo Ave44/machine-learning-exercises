@@ -75,4 +75,3 @@ summarize_diagnostics(history)
 
 model.save('Projekt2/trainedModelV1')
 
-

@@ -1,2 +1,2 @@
 # INF_Pawel_Olszewski_274983
-Repozytorium przechowujące zadania z przedmiotu Inteligencja obliczeniowa
+Repository containing assignments from the subject Computational Intelligence
